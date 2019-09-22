@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using FiverrEsqueApi.Config;
 using Swashbuckle.AspNetCore.Swagger;
+using FiverrEsqueApi.Models.Data.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace FiverrEsqueApi
 {
@@ -27,6 +29,15 @@ namespace FiverrEsqueApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddEntityFrameworkNpgsql()
+            .AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseNpgsql(
+                Configuration["Data:FiverrEsqueApp:ConnectionString"]);
+            })
+            .BuildServiceProvider();
+
             services.AddSwaggerGen(x => 
             {
                 x.SwaggerDoc("v1", new Info { Title = "Fiverr Esque Api", Version = "v1" });
